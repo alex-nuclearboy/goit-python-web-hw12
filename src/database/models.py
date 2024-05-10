@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, Text, func
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -22,9 +24,13 @@ class Contact(Base):
                                 the contact, stored as text and is optional.
         created_at (DateTime): The timestamp when the contact was created,
                                defaults to the current time.
-        updated_at (DateTime): The timestamp when the contact was last updated.
-                               It updates automatically on modification
-                               of the contact.
+        updated_at (DateTime): The timestamp when the contact was last updated,
+                               updates automatically on modification.
+        user_id (Integer): Foreign key linking to the User model,
+                           set to None if not specified.
+        user (relationship): A SQLAlchemy ORM relationship that binds
+                             the contact to a User, allowing for direct access
+                             to the user details.
     """
     __tablename__ = 'contacts'
 
@@ -39,3 +45,35 @@ class Contact(Base):
     updated_at = Column(
         'updated_at', DateTime, default=func.now(), onupdate=func.now()
     )
+    user_id = Column(
+        'user_id', ForeignKey('users.id', ondelete='CASCADE'), default=None
+    )
+    user = relationship('User', backref="notes")
+
+
+class User(Base):
+    """
+    Represents a user entity in the database, storing user authentication
+    and identification details.
+
+    Attributes:
+        id (Integer): The primary key for the user, automatically generated.
+        username (String): The username of the user, optional.
+        email (String): The user's unique email address, used for login.
+        password (String): The hashed password for the user, required for
+                           authentication purposes.
+        created_at (DateTime): The timestamp when the user account was created,
+                               defaults to the current time.
+        avatar (String): A URL to the user's avatar image, optional.
+        refresh_token (String): A refresh token for the user's session,
+                                optional, used in authentication systems
+                                to renew access tokens.
+    """
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50))
+    email = Column(String(50), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+    created_at = Column('created_at', DateTime, default=func.now())
+    avatar = Column(String(255), nullable=True)
+    refresh_token = Column(String(255), nullable=True)
