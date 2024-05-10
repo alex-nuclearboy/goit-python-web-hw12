@@ -86,6 +86,7 @@ Once the server is running, you can access the Swagger UI to test the API endpoi
 - **Register a New User:**
 
 Send a POST request to `http://localhost:8000/api/auth/signup` with a JSON body containing `username`, `email`, and `password`.
+
 Example:
 ```bash
 {
