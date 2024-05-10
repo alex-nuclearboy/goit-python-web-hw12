@@ -70,12 +70,30 @@ class ContactResponse(ContactBase):
 
 
 class UserModel(BaseModel):
+    """
+    A model representing the data required to create a user.
+
+    Attributes:
+        username (str): The username for the user.
+        email (str): The email address of the user.
+        password (str): The user's password.
+    """
     username: str = Field(min_length=5, max_length=16)
     email: str
     password: str = Field(min_length=6, max_length=10)
 
 
 class UserDb(BaseModel):
+    """
+    A database model for a user, to interface directly with SQLAlchemy.
+
+    Attributes:
+        id (int): The unique identifier for the user.
+        username (str): The username of the user.
+        email (str): The email address of the user.
+        created_at (datetime): The timestamp when the user was created.
+        avatar (str): A URL to the user's avatar.
+    """
     id: int
     username: str
     email: str
@@ -87,11 +105,32 @@ class UserDb(BaseModel):
 
 
 class UserResponse(BaseModel):
+    """
+    A response model that encapsulates the user data along with
+    a success message. This model is typically used to send user
+    data back to the client after a successful operation.
+
+    Attributes:
+        user (UserDb): The user data retrieved from the database.
+        detail (str): A message detailing the result of the operation,
+                      e.g., "User successfully created".
+    """
     user: UserDb
     detail: str = "User successfully created"
 
 
 class TokenModel(BaseModel):
+    """
+    A model representing the authentication tokens including access and
+    refresh tokens. This model is used to provide JWTs to the client upon
+    successful authentication.
+
+    Attributes:
+        access_token (str): The JWT used for accessing protected endpoints.
+        refresh_token (str): The JWT used for obtaining a new access token
+                             without requiring re-authentication.
+        token_type (str): Indicates the type of the tokens, typically "bearer".
+    """
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
