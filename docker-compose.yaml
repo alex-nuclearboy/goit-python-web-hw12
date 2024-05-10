@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:latest
+    container_name: contacts-postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: aN9e94poEi
+      POSTGRES_DB: rest_app
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres_data:
